@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quiz - La laïcité</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>QUIZ SUR LA LAÏCITÉ</h1>
+        <p>Teste tes connaissances !</p>
+    </header>
+
+
+    <main>
+
+        <section class="quiz">
+
+            <div id="quiz-container">
+
+                <p id="numero-question">Question 1 / 10</p>
+
+                <h2 id="question"></h2>
+
+
+                <div id="reponses"></div>
+
+
+                <!-- BARRE SUIVANT -->
+
+                <div id="zone-suivant">
+
+                    <span id="fleche-suivant">↓</span>
+
+                    <button id="bouton-suivant" onclick="questionSuivante()">
+                        SUIVANT →
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- RÉSULTAT -->
+
+            <div id="resultat" style="display: none;">
+
+                <h2>Quiz terminé !</h2>
+
+                <p class="score" id="score"></p>
+
+                <p id="message-score"></p>
+
+                <a href="Acceuil.html" class="bouton">
+                    RETOUR À L'ACCUEIL
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const questions = [
+
+            {
+                question: "La laïcité garantit-elle la liberté de conscience ?",
+                reponses: ["Vrai", "Faux"],
+                bonneReponse: 0
+            },
+
+            {
+                question: "En quelle année la loi de séparation des Églises et de l'État a-t-elle été adoptée ?",
+                reponses: ["1789", "1905", "1958"],
+                bonneReponse: 1
+            },
+
+            {
+                question: "La France est-elle une République laïque ?",
+                reponses: ["Vrai", "Faux"],
+                bonneReponse: 0
+            },
+
+            {
+                question: "En quelle année l'enseignement primaire public devient-il gratuit ?",
+                reponses: ["1881", "1882", "1905"],
+                bonneReponse: 0
+            },
+
+            {
+                question: "La laïcité signifie que l'État favorise une religion plutôt qu'une autre.",
+                reponses: ["Vrai", "Faux"],
+                bonneReponse: 1
+            },
+
+            {
+                question: "En quelle année l'enseignement public devient-il laïque ?",
+                reponses: ["1789", "1882", "1946"],
+                bonneReponse: 1
+            },
+
+            {
+                question: "Quel texte affirme que la France est une République « indivisible, laïque, démocratique et sociale » ?",
+                reponses: [
+                    "La Constitution",
+                    "Le Code civil",
+                    "Le règlement intérieur d'un collège"
+                ],
+                bonneReponse: 0
+            },
+
+            {
+                question: "La loi de 1905 concerne principalement :",
+                reponses: [
+                    "La séparation des Églises et de l'État",
+                    "La création de l'école obligatoire",
+                    "La création de la République"
+                ],
+                bonneReponse: 0
+            },
+
+            {
+                question: "Les personnels de l'Éducation nationale sont soumis à une obligation de neutralité.",
+                reponses: ["Vrai", "Faux"],
+                bonneReponse: 0
+            },
+
+            {
+                question: "La laïcité permet notamment :",
+                reponses: [
+                    "De garantir la liberté de conscience",
+                    "D'imposer une religion",
+                    "D'interdire toutes les religions"
+                ],
+                bonneReponse: 0
+            }
+
+        ];
+
+
+        let questionActuelle = 0;
+        let score = 0;
+
+        let reponseSelectionnee = null;
+
+
+        // =========================
+        // AFFICHER UNE QUESTION
+        // =========================
+
+        function afficherQuestion() {
+
+            const question = questions[questionActuelle];
+
+            document.getElementById("numero-question").textContent =
+                "Question " + (questionActuelle + 1) + " / " + questions.length;
+
+            document.getElementById("question").textContent =
+                question.question;
+
+
+            const zoneReponses = document.getElementById("reponses");
+
+            zoneReponses.innerHTML = "";
+
+
+            question.reponses.forEach((reponse, index) => {
+
+                const bouton = document.createElement("button");
+
+                bouton.classList.add("reponse");
+
+                bouton.textContent = reponse;
+
+                bouton.onclick = function () {
+                    selectionnerReponse(index);
+                };
+
+                zoneReponses.appendChild(bouton);
+
+            });
+
+
+            reponseSelectionnee = null;
+
+            // Le bouton suivant est caché au début
+            document.getElementById("zone-suivant").style.display = "none";
+        }
+
+
+        // =========================
+        // SÉLECTIONNER UNE RÉPONSE
+        // =========================
+
+        function selectionnerReponse(index) {
+
+            reponseSelectionnee = index;
+
+
+            const boutons = document.querySelectorAll(".reponse");
+
+
+            boutons.forEach((bouton, i) => {
+
+                bouton.classList.remove("selectionnee");
+
+                if (i === index) {
+                    bouton.classList.add("selectionnee");
+                }
+
+            });
+
+
+            // Dès qu'une réponse est choisie,
+            // le bouton SUIVANT apparaît
+
+            document.getElementById("zone-suivant").style.display = "block";
+
+        }
+
+
+        // =========================
+        // QUESTION SUIVANTE
+        // =========================
+
+        function questionSuivante() {
+
+            // On compte la réponse seulement
+            // au moment où on passe à la suite
+
+            const question = questions[questionActuelle];
+
+            if (reponseSelectionnee === question.bonneReponse) {
+                score++;
+            }
+
+
+            questionActuelle++;
+
+
+            if (questionActuelle < questions.length) {
+
+                afficherQuestion();
+
+            } else {
+
+                afficherResultat();
+
+            }
+
+        }
+
+
+        // =========================
+        // RÉSULTAT
+        // =========================
+
+        function afficherResultat() {
+
+            document.getElementById("quiz-container").style.display = "none";
+
+            document.getElementById("resultat").style.display = "block";
+
+
+            const note = (score / questions.length) * 20;
+
+
+            document.getElementById("score").textContent =
+                note.toFixed(2).replace(".", ",") + " / 20";
+
+
+            if (note >= 16) {
+
+                document.getElementById("message-score").textContent =
+                    "Très bon travail !";
+
+            } else if (note >= 10) {
+
+                document.getElementById("message-score").textContent =
+                    "Bien joué !";
+
+            } else {
+
+                document.getElementById("message-score").textContent =
+                    "Tu peux encore revoir la leçon !";
+
+            }
+
+        }
+
+
+        // =========================
+        // PREMIÈRE QUESTION
+        // =========================
+
+        afficherQuestion();
+
+    </script>
+
+</body>
+
+</html>
